@@ -146,10 +146,9 @@ def show_exam_result(request, course_id, submission_id):
 
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
-    selected_choices = submission.mychoices
+    selected_choices = submission.choices.filter()
 
-    
-        
+    if     
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', {'course':course, 'grade': 65, 'choices': selected_choices})
 
