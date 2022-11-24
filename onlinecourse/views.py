@@ -153,25 +153,42 @@ def show_exam_result(request, course_id, submission_id):
     total_marks = 0
 
     for question in course.question_set.all():
-        correct_choices_count = 0
-        selected_choices_count = 0
-        for choice in question.choice_set.all():
-            if choice.is_correct:
-                total_marks += choice.question.grade
-                # Calculate total score by user
-                if choice in selected_choices:
-                    total_score += choice.question.grade
-                    selected_choices_count += 1
+        total_marks += question.grade
+        get_score = False
+        incorrect_choices_count = 0
 
-                correct_choices_count += 1
-            elif not choice.is_correct and choice in selected_choices:
-                selected_choices_count += 1
-                if selected_choices_count > correct_choices_count:
-                    total_score = total_score - 1
+        for choice in question.choice_set.all():
+            if choice in selected_choices:
+                if choice.is_correct:
+                    get_score = True
+                else:
+                    get_score = False
+                    incorrect_choices_count += 1
+
+        if get_score and incorrect_choices_count == 0:
+            total_score += question.grade
+        else:
+            pass
+        
+        #correct_choices_count = 0
+        #selected_choices_count = 0
+        #for choice in question.choice_set.all():
+        #    if choice.is_correct:
+        #        total_marks += choice.question.grade
+                # Calculate total score by user
+        #        if choice in selected_choices:
+        #            total_score += choice.question.grade
+        #            selected_choices_count += 1
+
+        #        correct_choices_count += 1
+        #    elif not choice.is_correct and choice in selected_choices:
+        #        selected_choices_count += 1
+        #        if selected_choices_count > correct_choices_count:
+        #            total_score = total_score - 1
                 
 
     context['course'] = course
-    context['grade'] = total_score
+    context['grade'] =  int(total_score / total_marks * 100)
     context['choices'] = selected_choices 
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
