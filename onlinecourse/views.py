@@ -145,7 +145,7 @@ def show_exam_result(request, course_id, submission_id):
     submission = get_object_or_404(Submission, pk=submission_id)
 
 
-    return render(request, 'onlinecourse/exam_result_bootstrap.html', {'course':course, 'grade': 85})
+    return render(request, 'onlinecourse/exam_result_bootstrap.html', {'course':course, 'grade': 65})
 
 
 
