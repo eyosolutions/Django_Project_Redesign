@@ -146,14 +146,20 @@ def show_exam_result(request, course_id, submission_id):
     context = {}
     course = get_object_or_404(Course, pk=course_id)
     submission = get_object_or_404(Submission, pk=submission_id)
-    choice_set = Choice.objects.get()
+    # To retrieve total marks
+    questions = Question.objects.filter(course=course.id)
+    total_marks = 0
+    for question in questions:
+        correct_choices_count = Choice.objects.filter(is_correct=True, question=question.id).count()
+        total_marks += correct_choices_count
+
     selected_choices = submission.choices.all()
     total_score = 0
     for choice in selected_choices:
         if choice.is_correct:
             total_score += choice.question.grade
     context['course'] = course
-    context['grade'] = total_score
+    context['grade'] = total_score / total_marks * 100
     context['choices'] = selected_choices 
 
     return render(request, 'onlinecourse/exam_result_bootstrap.html', context)
